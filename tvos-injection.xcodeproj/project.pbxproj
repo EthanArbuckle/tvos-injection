@@ -1,0 +1,941 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CECFE1252A18AF9600DE14B5 /* launchd_hooks.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE1242A18AF9600DE14B5 /* launchd_hooks.m */; };
+		CECFE1332A18AFB800DE14B5 /* xpcproxy_hooks.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE1322A18AFB800DE14B5 /* xpcproxy_hooks.m */; };
+		CECFE1412A18AFE100DE14B5 /* tweakloader.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE1402A18AFE100DE14B5 /* tweakloader.m */; };
+		CECFE14F2A18B00500DE14B5 /* ldrestart.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE14E2A18B00500DE14B5 /* ldrestart.m */; };
+		CECFE16B2A19E01000DE14B5 /* launchd_injector.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE16A2A19E01000DE14B5 /* launchd_injector.m */; };
+		CECFE16F2A19E55700DE14B5 /* ldrestart.m in Sources */ = {isa = PBXBuildFile; fileRef = CECFE14E2A18B00500DE14B5 /* ldrestart.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CECFE1542A18B08000DE14B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECFE1052A18AF2700DE14B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CECFE11C2A18AF6400DE14B5;
+			remoteInfo = launchd_hooks;
+		};
+		CECFE1562A18B08000DE14B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECFE1052A18AF2700DE14B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CECFE1462A18AFF800DE14B5;
+			remoteInfo = ldrestart;
+		};
+		CECFE1582A18B08000DE14B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECFE1052A18AF2700DE14B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CECFE1382A18AFCB00DE14B5;
+			remoteInfo = tweakloader;
+		};
+		CECFE15A2A18B08000DE14B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECFE1052A18AF2700DE14B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CECFE12A2A18AFAB00DE14B5;
+			remoteInfo = xpcproxy_hooks;
+		};
+		CECFE16C2A19E01B00DE14B5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CECFE1052A18AF2700DE14B5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CECFE1622A19DFE400DE14B5;
+			remoteInfo = launchd_injector;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CECFE11D2A18AF6400DE14B5 /* launchd_hooks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = launchd_hooks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECFE1242A18AF9600DE14B5 /* launchd_hooks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = launchd_hooks.m; path = src/launchd_hooks.m; sourceTree = "<group>"; };
+		CECFE12B2A18AFAB00DE14B5 /* xpcproxy_hooks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = xpcproxy_hooks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECFE1322A18AFB800DE14B5 /* xpcproxy_hooks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = xpcproxy_hooks.m; path = src/xpcproxy_hooks.m; sourceTree = "<group>"; };
+		CECFE1392A18AFCB00DE14B5 /* tweakloader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = tweakloader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECFE1402A18AFE100DE14B5 /* tweakloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = tweakloader.m; path = src/tweakloader.m; sourceTree = "<group>"; };
+		CECFE1472A18AFF800DE14B5 /* ldrestart.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ldrestart.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECFE14E2A18B00500DE14B5 /* ldrestart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ldrestart.m; path = src/ldrestart.m; sourceTree = "<group>"; };
+		CECFE15C2A18B28200DE14B5 /* deploy.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = deploy.py; sourceTree = "<group>"; };
+		CECFE15D2A19847A00DE14B5 /* ldrestart_ents.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ldrestart_ents.xml; sourceTree = "<group>"; };
+		CECFE1632A19DFE400DE14B5 /* launchd_injector.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = launchd_injector.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CECFE16A2A19E01000DE14B5 /* launchd_injector.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = launchd_injector.m; path = src/launchd_injector.m; sourceTree = "<group>"; };
+		CECFE16E2A19E04600DE14B5 /* launchd_injector_ents.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = launchd_injector_ents.xml; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CECFE11A2A18AF6400DE14B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1282A18AFAB00DE14B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1362A18AFCB00DE14B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1442A18AFF800DE14B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1602A19DFE400DE14B5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CECFE1042A18AF2700DE14B5 = {
+			isa = PBXGroup;
+			children = (
+				CECFE1242A18AF9600DE14B5 /* launchd_hooks.m */,
+				CECFE1322A18AFB800DE14B5 /* xpcproxy_hooks.m */,
+				CECFE1402A18AFE100DE14B5 /* tweakloader.m */,
+				CECFE14E2A18B00500DE14B5 /* ldrestart.m */,
+				CECFE16A2A19E01000DE14B5 /* launchd_injector.m */,
+				CECFE15D2A19847A00DE14B5 /* ldrestart_ents.xml */,
+				CECFE16E2A19E04600DE14B5 /* launchd_injector_ents.xml */,
+				CECFE15C2A18B28200DE14B5 /* deploy.py */,
+				CECFE10F2A18AF2700DE14B5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CECFE10F2A18AF2700DE14B5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CECFE11D2A18AF6400DE14B5 /* launchd_hooks.framework */,
+				CECFE12B2A18AFAB00DE14B5 /* xpcproxy_hooks.framework */,
+				CECFE1392A18AFCB00DE14B5 /* tweakloader.framework */,
+				CECFE1472A18AFF800DE14B5 /* ldrestart.framework */,
+				CECFE1632A19DFE400DE14B5 /* launchd_injector.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		CECFE1182A18AF6400DE14B5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1262A18AFAB00DE14B5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1342A18AFCB00DE14B5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1422A18AFF800DE14B5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE15E2A19DFE400DE14B5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXLegacyTarget section */
+		CECFE1502A18B07400DE14B5 /* build */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = deploy.py;
+			buildConfigurationList = CECFE1512A18B07500DE14B5 /* Build configuration list for PBXLegacyTarget "build" */;
+			buildPhases = (
+			);
+			buildToolPath = python3;
+			buildWorkingDirectory = "";
+			dependencies = (
+				CECFE16D2A19E01B00DE14B5 /* PBXTargetDependency */,
+				CECFE1552A18B08000DE14B5 /* PBXTargetDependency */,
+				CECFE1572A18B08000DE14B5 /* PBXTargetDependency */,
+				CECFE1592A18B08000DE14B5 /* PBXTargetDependency */,
+				CECFE15B2A18B08000DE14B5 /* PBXTargetDependency */,
+			);
+			name = build;
+			passBuildSettingsInEnvironment = 1;
+			productName = build;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		CECFE11C2A18AF6400DE14B5 /* launchd_hooks */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CECFE1212A18AF6400DE14B5 /* Build configuration list for PBXNativeTarget "launchd_hooks" */;
+			buildPhases = (
+				CECFE1182A18AF6400DE14B5 /* Headers */,
+				CECFE1192A18AF6400DE14B5 /* Sources */,
+				CECFE11A2A18AF6400DE14B5 /* Frameworks */,
+				CECFE11B2A18AF6400DE14B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = launchd_hooks;
+			productName = launchd_hooks;
+			productReference = CECFE11D2A18AF6400DE14B5 /* launchd_hooks.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CECFE12A2A18AFAB00DE14B5 /* xpcproxy_hooks */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CECFE12F2A18AFAB00DE14B5 /* Build configuration list for PBXNativeTarget "xpcproxy_hooks" */;
+			buildPhases = (
+				CECFE1262A18AFAB00DE14B5 /* Headers */,
+				CECFE1272A18AFAB00DE14B5 /* Sources */,
+				CECFE1282A18AFAB00DE14B5 /* Frameworks */,
+				CECFE1292A18AFAB00DE14B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = xpcproxy_hooks;
+			productName = xpcproxy_hooks;
+			productReference = CECFE12B2A18AFAB00DE14B5 /* xpcproxy_hooks.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CECFE1382A18AFCB00DE14B5 /* tweakloader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CECFE13D2A18AFCB00DE14B5 /* Build configuration list for PBXNativeTarget "tweakloader" */;
+			buildPhases = (
+				CECFE1342A18AFCB00DE14B5 /* Headers */,
+				CECFE1352A18AFCB00DE14B5 /* Sources */,
+				CECFE1362A18AFCB00DE14B5 /* Frameworks */,
+				CECFE1372A18AFCB00DE14B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tweakloader;
+			productName = tweakloader;
+			productReference = CECFE1392A18AFCB00DE14B5 /* tweakloader.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CECFE1462A18AFF800DE14B5 /* ldrestart */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CECFE14B2A18AFF800DE14B5 /* Build configuration list for PBXNativeTarget "ldrestart" */;
+			buildPhases = (
+				CECFE1422A18AFF800DE14B5 /* Headers */,
+				CECFE1432A18AFF800DE14B5 /* Sources */,
+				CECFE1442A18AFF800DE14B5 /* Frameworks */,
+				CECFE1452A18AFF800DE14B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ldrestart;
+			productName = ldrestart;
+			productReference = CECFE1472A18AFF800DE14B5 /* ldrestart.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		CECFE1622A19DFE400DE14B5 /* launchd_injector */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CECFE1672A19DFE400DE14B5 /* Build configuration list for PBXNativeTarget "launchd_injector" */;
+			buildPhases = (
+				CECFE15E2A19DFE400DE14B5 /* Headers */,
+				CECFE15F2A19DFE400DE14B5 /* Sources */,
+				CECFE1602A19DFE400DE14B5 /* Frameworks */,
+				CECFE1612A19DFE400DE14B5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = launchd_injector;
+			productName = launchd_injector;
+			productReference = CECFE1632A19DFE400DE14B5 /* launchd_injector.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CECFE1052A18AF2700DE14B5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					CECFE11C2A18AF6400DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					CECFE12A2A18AFAB00DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					CECFE1382A18AFCB00DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					CECFE1462A18AFF800DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					CECFE1502A18B07400DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+					CECFE1622A19DFE400DE14B5 = {
+						CreatedOnToolsVersion = 14.0.1;
+					};
+				};
+			};
+			buildConfigurationList = CECFE1082A18AF2700DE14B5 /* Build configuration list for PBXProject "tvos-injection" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CECFE1042A18AF2700DE14B5;
+			productRefGroup = CECFE10F2A18AF2700DE14B5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CECFE11C2A18AF6400DE14B5 /* launchd_hooks */,
+				CECFE12A2A18AFAB00DE14B5 /* xpcproxy_hooks */,
+				CECFE1382A18AFCB00DE14B5 /* tweakloader */,
+				CECFE1462A18AFF800DE14B5 /* ldrestart */,
+				CECFE1502A18B07400DE14B5 /* build */,
+				CECFE1622A19DFE400DE14B5 /* launchd_injector */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CECFE11B2A18AF6400DE14B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1292A18AFAB00DE14B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1372A18AFCB00DE14B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1452A18AFF800DE14B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1612A19DFE400DE14B5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CECFE1192A18AF6400DE14B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CECFE1252A18AF9600DE14B5 /* launchd_hooks.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1272A18AFAB00DE14B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CECFE1332A18AFB800DE14B5 /* xpcproxy_hooks.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1352A18AFCB00DE14B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CECFE1412A18AFE100DE14B5 /* tweakloader.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE1432A18AFF800DE14B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CECFE14F2A18B00500DE14B5 /* ldrestart.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CECFE15F2A19DFE400DE14B5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CECFE16B2A19E01000DE14B5 /* launchd_injector.m in Sources */,
+				CECFE16F2A19E55700DE14B5 /* ldrestart.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CECFE1552A18B08000DE14B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CECFE11C2A18AF6400DE14B5 /* launchd_hooks */;
+			targetProxy = CECFE1542A18B08000DE14B5 /* PBXContainerItemProxy */;
+		};
+		CECFE1572A18B08000DE14B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CECFE1462A18AFF800DE14B5 /* ldrestart */;
+			targetProxy = CECFE1562A18B08000DE14B5 /* PBXContainerItemProxy */;
+		};
+		CECFE1592A18B08000DE14B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CECFE1382A18AFCB00DE14B5 /* tweakloader */;
+			targetProxy = CECFE1582A18B08000DE14B5 /* PBXContainerItemProxy */;
+		};
+		CECFE15B2A18B08000DE14B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CECFE12A2A18AFAB00DE14B5 /* xpcproxy_hooks */;
+			targetProxy = CECFE15A2A18B08000DE14B5 /* PBXContainerItemProxy */;
+		};
+		CECFE16D2A19E01B00DE14B5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CECFE1622A19DFE400DE14B5 /* launchd_injector */;
+			targetProxy = CECFE16C2A19E01B00DE14B5 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CECFE1132A18AF2700DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = NO;
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		CECFE1142A18AF2700DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = appletvos;
+				TVOS_DEPLOYMENT_TARGET = 16.0;
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		CECFE1222A18AF6400DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.launchd-hooks";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		CECFE1232A18AF6400DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.launchd-hooks";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		CECFE1302A18AFAB00DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.xpcproxy-hooks";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		CECFE1312A18AFAB00DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.xpcproxy-hooks";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		CECFE13E2A18AFCB00DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.objc.tweakloader;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		CECFE13F2A18AFCB00DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.objc.tweakloader;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		CECFE14C2A18AFF800DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = include;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.objc.ldrestart;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		CECFE14D2A18AFF800DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = include;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.objc.ldrestart;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+		CECFE1522A18B07500DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 44L979X757;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		CECFE1532A18B07500DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 44L979X757;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		CECFE1682A19DFE400DE14B5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = include;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DBUILDING_FOR_LAUNCHD_INJECTOR";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.launchd-injector";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Debug;
+		};
+		CECFE1692A19DFE400DE14B5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 44L979X757;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = include;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				MARKETING_VERSION = 1.0;
+				OTHER_CFLAGS = "-DBUILDING_FOR_LAUNCHD_INJECTOR";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.objc.launchd-injector";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				TARGETED_DEVICE_FAMILY = 3;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CECFE1082A18AF2700DE14B5 /* Build configuration list for PBXProject "tvos-injection" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE1132A18AF2700DE14B5 /* Debug */,
+				CECFE1142A18AF2700DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE1212A18AF6400DE14B5 /* Build configuration list for PBXNativeTarget "launchd_hooks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE1222A18AF6400DE14B5 /* Debug */,
+				CECFE1232A18AF6400DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE12F2A18AFAB00DE14B5 /* Build configuration list for PBXNativeTarget "xpcproxy_hooks" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE1302A18AFAB00DE14B5 /* Debug */,
+				CECFE1312A18AFAB00DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE13D2A18AFCB00DE14B5 /* Build configuration list for PBXNativeTarget "tweakloader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE13E2A18AFCB00DE14B5 /* Debug */,
+				CECFE13F2A18AFCB00DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE14B2A18AFF800DE14B5 /* Build configuration list for PBXNativeTarget "ldrestart" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE14C2A18AFF800DE14B5 /* Debug */,
+				CECFE14D2A18AFF800DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE1512A18B07500DE14B5 /* Build configuration list for PBXLegacyTarget "build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE1522A18B07500DE14B5 /* Debug */,
+				CECFE1532A18B07500DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CECFE1672A19DFE400DE14B5 /* Build configuration list for PBXNativeTarget "launchd_injector" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CECFE1682A19DFE400DE14B5 /* Debug */,
+				CECFE1692A19DFE400DE14B5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CECFE1052A18AF2700DE14B5 /* Project object */;
+}
