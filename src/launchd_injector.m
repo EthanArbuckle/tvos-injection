@@ -1,5 +1,6 @@
 #include <Foundation/Foundation.h>
 #include <mach/mach.h>
+#include <xpc.h>
 #include <dlfcn.h>
 
 /*
@@ -7,12 +8,37 @@
  relevant dylibs into subsequently spawned processes.
  
  A partial userspace reboot is performed after launchd's dlopen() to ensure tweaks are injected into processes even if they were spawned before this utility runs.
-*/
+ Additionally, custom LaunchDaemons (originating from tweaks) are kicked-off from here.
+ */
+
+#define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
 
 extern kern_return_t mach_vm_allocate(vm_map_t target, mach_vm_address_t *address, mach_vm_size_t size, int flags);
 extern kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, boolean_t set_maximum, vm_prot_t new_protection);
 extern kern_return_t mach_vm_write(vm_map_t target_task, mach_vm_address_t address, vm_offset_t data, mach_msg_type_number_t dataCnt);
 extern void partial_userspace_reboot(void);
+
+void load_daemon(const char *daemon_plist) {
+    
+    xpc_object_t dict = xpc_dictionary_create_empty();
+    xpc_dictionary_set_uint64(dict, "subsystem", 3);
+    xpc_dictionary_set_uint64(dict, "handle", 0);
+    xpc_dictionary_set_bool(dict, "legacy-load", 1);
+    xpc_dictionary_set_uint64(dict, "type", 1);
+    xpc_dictionary_set_bool(dict, "enable", 1);
+    xpc_dictionary_set_uint64(dict, "routine", 800);
+    
+    xpc_object_t paths = xpc_array_create_empty();
+    xpc_array_set_string(paths, XPC_ARRAY_APPEND, daemon_plist);
+    xpc_dictionary_set_value(dict, "paths", paths);
+    
+    struct xpc_global_data *xpc_gd = (struct xpc_global_data *)_os_alloc_once_table[1].ptr;
+    xpc_object_t reply = NULL;
+
+    if (xpc_pipe_routine(xpc_gd->xpc_bootstrap_pipe, dict, &reply) != KERN_SUCCESS) {
+        printf("failed to start %s\n", daemon_plist);
+    }
+}
 
 int main(int argc, char *argv[]) {
     
@@ -84,6 +110,15 @@ int main(int argc, char *argv[]) {
     
     sleep(1);
     partial_userspace_reboot();
+    
+    NSArray *daemonPlists = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:LAUNCH_DAEMONS_DIRECTORY error:nil];
+    if (daemonPlists) {
+        for (NSString *daemonPlistName in daemonPlists) {
+            const char *absolute_path = [LAUNCH_DAEMONS_DIRECTORY stringByAppendingPathComponent:daemonPlistName].UTF8String;
+            printf("loading LaunchDaemon: %s\n", absolute_path);
+            load_daemon(absolute_path);
+        }
+    }
     
     printf("success!\n");
     return 0;
