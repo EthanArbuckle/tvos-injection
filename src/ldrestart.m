@@ -1,4 +1,5 @@
 #include <xpc.h>
+#include <sys/mount.h>
 
 static int kill_process(const char *name) {
     printf("killing process: %s\n", name);
@@ -79,6 +80,8 @@ void partial_userspace_reboot(void) {
 // This is only performed when `ldrestart` is invoked directly
 extern int reboot3(uint64_t flags, ...);
 int main(int argc, char *argv[]) {
+    
+    unmount("/Developer", MNT_FORCE);
 
     int retval = 0;
     if ((retval = reboot3(0x2000000000000000llu)) != 0) {
