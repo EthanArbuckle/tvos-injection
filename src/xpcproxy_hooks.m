@@ -8,12 +8,51 @@
  Similiar to the launchd hook, the hooks applied to this process ensure that the tweakloader is injected into services spawned by xpcproxy.
  */
 
+static const char *process_blacklist[] = {
+    "launchd",
+    "fairplayd",
+    "logd",
+    "configd",
+    "mobiletimerd",
+    "keybagd",
+    "thermalmonitord",
+    "sleepd",
+    "timed",
+    "rapportd",
+    "mtmmergeprops",
+    "ptpd",
+    "distnoted",
+    "remoted",
+    "IOMFB_fdr_loader",
+    "fseventsd",
+    "usermanagerd",
+    "notifyd",
+    "dash",
+    "routined",
+    "accessoryupdated",
+    "familynotificationd",
+    "wcd",
+    "contextstored",
+    "axassetsd",
+    "healthd",
+    "tccd",
+    "biomed",
+    "cloudpaird"
+};
+
 static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t * __restrict attrp, char *const __argv[__restrict], char *const __envp[__restrict], void *original_function) {
     
     char *const *envp = __envp;
-    
-    // CloudKeychainProxy is skipped because: 1 it is spawned very frequently and the logs are annoying, and 2 there is no legit reason for someone to need to inject into this process.
-    int should_hook = strstr(path, "CloudKeychainProxy") == NULL;
+
+    int should_hook = 1;
+    for (int i = 0; i < 29; i++) {
+        const char *blacklisted_process = process_blacklist[i];
+        if (path != NULL && strstr(blacklisted_process, path) != NULL) {
+            should_hook = 0;
+            break;
+        }
+    }
+
     if (should_hook) {
         
         size_t envp_size = 0;
