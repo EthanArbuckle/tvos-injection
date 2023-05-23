@@ -213,25 +213,26 @@ __attribute__ ((constructor)) static void init_tweakloader(void) {
         }
 
         // Setup signal handlers to catch exceptions (so safemode can be enabled)
-        struct sigaction action;
-        memset(&action, 0, sizeof(action));
-        action.sa_sigaction = &signal_handler;
-        action.sa_flags = SA_SIGINFO | SA_RESETHAND;
-        sigemptyset(&action.sa_mask);
-        
-        sigaction(SIGQUIT, &action, NULL);
-        sigaction(SIGILL, &action, NULL);
-        sigaction(SIGTRAP, &action, NULL);
-        sigaction(SIGABRT, &action, NULL);
-        sigaction(SIGEMT, &action, NULL);
-        sigaction(SIGFPE, &action, NULL);
-        sigaction(SIGBUS, &action, NULL);
-        sigaction(SIGSEGV, &action, NULL);
-        sigaction(SIGSYS, &action, NULL);
-        
+        if (isSystemApp) {
+            struct sigaction action;
+            memset(&action, 0, sizeof(action));
+            action.sa_sigaction = &signal_handler;
+            action.sa_flags = SA_SIGINFO | SA_RESETHAND;
+            sigemptyset(&action.sa_mask);
+            
+            sigaction(SIGQUIT, &action, NULL);
+            sigaction(SIGILL, &action, NULL);
+            sigaction(SIGTRAP, &action, NULL);
+            sigaction(SIGABRT, &action, NULL);
+            sigaction(SIGEMT, &action, NULL);
+            sigaction(SIGFPE, &action, NULL);
+            sigaction(SIGBUS, &action, NULL);
+            sigaction(SIGSEGV, &action, NULL);
+            sigaction(SIGSYS, &action, NULL);
+        }
+
         // Gather up the tweaks that should be injected into this process
         NSArray *tweaksToInject = locate_dylibs_to_inject(current_executable_path, bundleID);
-        
         if ([tweaksToInject count] > 0) {
             // There are tweaks to inject!
             // However, their load commands may point to libraries (like Substrate/Substitute/Libhooker) expected to be on the System partition.
@@ -240,13 +241,13 @@ __attribute__ ((constructor)) static void init_tweakloader(void) {
             void *lhHandle = dlopen("/fs/jb/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", 0);
             _MSHookFunction = dlsym(lhHandle, "MSHookFunction");
             _LHFindSymbols = dlsym(lhHandle, "LHFindSymbols");
+            int found_hooking_symbols = _MSHookFunction != NULL && _LHFindSymbols != NULL;
             
             struct task_dyld_info dyldInfo;
             mach_msg_type_number_t count = TASK_DYLD_INFO_COUNT;
-            if (task_info(mach_task_self_, TASK_DYLD_INFO, (task_info_t)&dyldInfo, &count) == KERN_SUCCESS) {
+            if (found_hooking_symbols && task_info(mach_task_self_, TASK_DYLD_INFO, (task_info_t)&dyldInfo, &count) == KERN_SUCCESS) {
                 
                 // Only interested in dyld'd `open()`. We don't want to catch invocations this process makes to `open()`.
-                // dyld cannot be dlopen()'d, but we can get to its symbol table using its mach_header (from dyld_all_image_infos)
                 const struct dyld_all_image_infos *imageInfos = (struct dyld_all_image_infos *)dyldInfo.all_image_info_addr;
                 struct libhooker_image *lh_image = (struct libhooker_image *)malloc(sizeof(struct libhooker_image));
                 lh_image->imageHeader = imageInfos->dyldImageLoadAddress;
