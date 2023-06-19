@@ -41,7 +41,7 @@ void load_daemon(const char *daemon_plist) {
 }
 
 int main(int argc, char *argv[]) {
-    
+
     task_t launchd_task;
     pid_t launchd_pid = 1;
     if (task_for_pid(mach_task_self(), launchd_pid, &launchd_task) != KERN_SUCCESS) {
@@ -65,13 +65,6 @@ int main(int argc, char *argv[]) {
     uint64_t *stack = malloc(stack_size);
     size_t sp = (stack_size / 8) - 2;
     
-    mach_port_t remote_thread;
-    if (thread_create(launchd_task, &remote_thread) != KERN_SUCCESS) {
-        free(stack);
-        printf("failed to create remote thread\n");
-        return -1;
-    }
-    
     mach_vm_write(launchd_task, remote_stack, (vm_offset_t)stack, (mach_msg_type_number_t)stack_size);
     
     arm_thread_state64_t state = {};
@@ -84,21 +77,23 @@ int main(int argc, char *argv[]) {
     __darwin_arm_thread_state64_set_pc_fptr(state, dlsym(RTLD_NEXT, "pthread_create_from_mach_thread"));
     __darwin_arm_thread_state64_set_sp(state, (void *)(remote_stack + (sp * sizeof(uint64_t))));
     
-    if (thread_set_state(remote_thread, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT) != KERN_SUCCESS) {
-        free(stack);
-        printf("failed to set remote thread state\n");
-        return -1;
-    }
-    
     mach_port_t exc_handler;
     mach_port_allocate(mach_task_self(), MACH_PORT_RIGHT_RECEIVE, &exc_handler);
     mach_port_insert_right(mach_task_self(), exc_handler, exc_handler, MACH_MSG_TYPE_MAKE_SEND);
+    
+    mach_port_t remote_thread;
+    if (thread_create_running(launchd_task, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT, &remote_thread) != KERN_SUCCESS) {
+        free(stack);
+        printf("failed to create remote thread\n");
+        return -1;
+    }
     
     if (thread_set_exception_ports(remote_thread, EXC_MASK_BAD_ACCESS, exc_handler, EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES, ARM_THREAD_STATE64) != KERN_SUCCESS) {
         free(stack);
         printf("failed to set remote exception port\n");
         return -1;
     }
+    
     thread_resume(remote_thread);
     
     mach_msg_header_t *msg = malloc(0x4000);

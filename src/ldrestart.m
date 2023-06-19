@@ -76,12 +76,17 @@ void partial_userspace_reboot(void) {
 }
 
 #ifndef BUILDING_FOR_LAUNCHD_INJECTOR
+
 // Full userspace reboot. This removes code injection artifacts from all processes (including launchd)
 // This is only performed when `ldrestart` is invoked directly
 extern int reboot3(uint64_t flags, ...);
 int main(int argc, char *argv[]) {
-    
+        
+    // Unmount DDI and checkra1n's binpack.
+    // If they aren't explicitly unmounted before userspace reboot, they fail
+    // to remount afterwards
     unmount("/Developer", MNT_FORCE);
+    unmount("/binpack", MNT_FORCE);
 
     int retval = 0;
     if ((retval = reboot3(0x2000000000000000llu)) != 0) {
@@ -90,4 +95,5 @@ int main(int argc, char *argv[]) {
     
     return retval;
 }
+
 #endif

@@ -1,7 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <dyld-interposing.h>
-#include <spawn.h>
 #import <sys/stat.h>
+#import <spawn.h>
+#import "common.h"
 
 /*
  launchd is used to bootstrap injection into processes system-wide. launchd spawns both normal processes and XPC services.
@@ -22,6 +23,22 @@
 
 #define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
 
+// This dictates whether injection is kicked off immediately upon this dylib loading (by using libhooker to hook the posix_spawn functions),
+// vs injection using dyld function interposing which requires launchd to be respawned. The former is faster and doens't require killing any processes, but tweaks won't be
+// loaded into processes until they are restarted (if they're already running). The latter is slower because every process on the device is respawned, but tweaks are immediately injected
+// system-wide.
+#define REQUIRE_FULL_USERSPACE_REBOOT 0
+
+#if REQUIRE_FULL_USERSPACE_REBOOT
+    extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+#else
+    #import <dlfcn.h>
+    static void (*_MSHookFunction)(void *symbol, void *replace, void **result);
+    static void *orig_posix_spawn;
+    static void *orig_posix_spawnp;
+#endif
+
+
 static int posix_spawn_launchd(pid_t * __restrict pid, const char * __restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t * __restrict attrp, char *const __argv[__restrict], char *const __envp[__restrict], void *original_function) {
     
     char *const *envp = __envp;
@@ -29,10 +46,14 @@ static int posix_spawn_launchd(pid_t * __restrict pid, const char * __restrict p
     // Never inject things into launchd via posix_spawn*. The launchd hooks are injected using a standalone executable.
     int should_hook = strcmp(path, "/sbin/launchd");
     if (should_hook) {
-        
+
         // If xpcproxy is being spawned, add xpcproxy_hooks.dylib to it (which handles adding the tweakloader). For everything else, add the tweakloader directly
         int is_xpcproxy = strstr(path, "xpcproxy") != NULL;
         char *dylib_to_inject = is_xpcproxy ? "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/xpcproxy_hooks.dylib" : "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/tweakloader.dylib";
+        
+        if (path && strlen(path) > 2) {
+            serial_println("inserting dylib into process %s: %s", path, dylib_to_inject);
+        }
         
         size_t envp_size = 0;
         while (__envp[envp_size] != NULL) {
@@ -55,19 +76,33 @@ static int posix_spawn_launchd(pid_t * __restrict pid, const char * __restrict p
 }
 
 static int posix_spawn_hook(pid_t * __restrict pid, const char * __restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t * __restrict attrp, char *const __argv[__restrict], char *const __envp[__restrict]) {
+#if REQUIRE_FULL_USERSPACE_REBOOT
     return posix_spawn_launchd(pid, path, file_actions, attrp, __argv, __envp, posix_spawn);
+#else
+    return posix_spawn_launchd(pid, path, file_actions, attrp, __argv, __envp, orig_posix_spawn);
+#endif
 }
 
 static int posix_spawnp_hook(pid_t * __restrict pid, const char * __restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t * __restrict attrp, char *const __argv[__restrict], char *const __envp[__restrict]) {
+#if REQUIRE_FULL_USERSPACE_REBOOT
     return posix_spawn_launchd(pid, path, file_actions, attrp, __argv, __envp, posix_spawnp);
+#else
+    return posix_spawn_launchd(pid, path, file_actions, attrp, __argv, __envp, orig_posix_spawnp);
+#endif
 }
 
-extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+#if REQUIRE_FULL_USERSPACE_REBOOT
 xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) {
     
     xpc_object_t xdict_out = xpc_dictionary_get_value(xdict, key);
+    if (key == NULL || strlen(key) < 1) {
+        return xdict_out;
+    }
+    
     if (strcmp(key, "LaunchDaemons") == 0) {
         
+        serial_println("caught launch daemon creation plist");
+
         NSArray *daemonPlistNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:LAUNCH_DAEMONS_DIRECTORY error:nil];
         for (NSString *plistName in daemonPlistNames) {
             
@@ -83,6 +118,8 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) 
                 continue;
             }
             
+            serial_println("inserting launch daemon plist: %s", plist_path);
+            
             void *plist_buff = mmap(NULL, info.st_size, PROT_READ, MAP_PRIVATE | MAP_FILE, plist_fd, 0);
             if (plist_buff != NULL) {
                 xpc_object_t xpc_plist = xpc_create_from_plist(plist_buff, info.st_size);
@@ -95,23 +132,40 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) 
         }
     }
     else if (strcmp(key, "Paths") == 0) {
+        serial_println("inserting launch daemon path: %s", LAUNCH_DAEMONS_DIRECTORY.UTF8String);
         xpc_array_set_string(xdict_out, XPC_ARRAY_APPEND, LAUNCH_DAEMONS_DIRECTORY.UTF8String);
     }
-    
+
     return xdict_out;
 }
 
+#endif
+
 static void __attribute__((constructor)) init_launchd_hooks(void) {
     
+    serial_println("Injected into launchd. Requiring full userspace reboot: %d", REQUIRE_FULL_USERSPACE_REBOOT);
+    
+#if REQUIRE_FULL_USERSPACE_REBOOT
     char *is_reload = getenv("libhooker-launchd-reload");
     if (is_reload && strcmp(is_reload, "1") == 0) {
-        
+
         DYLD_INTERPOSE(posix_spawn_hook, posix_spawn);
         DYLD_INTERPOSE(posix_spawnp_hook, posix_spawnp);
         DYLD_INTERPOSE(xpc_dictionary_get_value_hook, xpc_dictionary_get_value);
         return;
     }
-    
+
     setenv("DYLD_INSERT_LIBRARIES", "/fs/jb/usr/libexec/libhooker/launchd_hooks.dylib", 1);
     setenv("libhooker-launchd-reload", "1", 1);
+#else
+    void *lhHandle = dlopen("/fs/jb/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", 0);
+    serial_println("libhooker dyld handle: %p", lhHandle);
+
+    if (lhHandle) {
+        _MSHookFunction = dlsym(lhHandle, "MSHookFunction");
+        _MSHookFunction((void *)posix_spawn, (void *)posix_spawn_hook, (void **)&orig_posix_spawn);
+        _MSHookFunction((void *)posix_spawnp, (void *)posix_spawnp_hook, (void **)&orig_posix_spawnp);
+        serial_println("succesfully hooked posix_spawn functions");
+    }
+#endif
 }

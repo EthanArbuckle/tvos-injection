@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <dyld-interposing.h>
-#include <spawn.h>
+#import <spawn.h>
+#import "common.h"
 
 /*
  xpcproxy is a trampoline spawned by launchd that is responsible for launching xpc services. Launchd ensures that xpcproxy_hooks.dylib is brought into this process.
@@ -37,7 +38,9 @@ static const char *process_blacklist[] = {
     "healthd",
     "tccd",
     "biomed",
-    "cloudpaird"
+    "cloudpaird",
+    "CloudKeychainProxy",
+    "dropbear",
 };
 
 static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict path, const posix_spawn_file_actions_t *file_actions, const posix_spawnattr_t * __restrict attrp, char *const __argv[__restrict], char *const __envp[__restrict], void *original_function) {
@@ -45,9 +48,9 @@ static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict 
     char *const *envp = __envp;
 
     int should_hook = 1;
-    for (int i = 0; i < 29; i++) {
+    for (int i = 0; i < 31; i++) {
         const char *blacklisted_process = process_blacklist[i];
-        if (path != NULL && strstr(blacklisted_process, path) != NULL) {
+        if (path != NULL && strstr(path, blacklisted_process) != NULL) {
             should_hook = 0;
             break;
         }
@@ -55,6 +58,10 @@ static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict 
 
     if (should_hook) {
         
+        if (path && strlen(path) > 2) {
+            serial_println("inserting tweakloader.dylib into process: %s", path);
+        }
+
         size_t envp_size = 0;
         while (__envp[envp_size] != NULL) {
             envp_size++;

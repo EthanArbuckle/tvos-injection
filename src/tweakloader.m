@@ -1,10 +1,11 @@
 #import <Foundation/Foundation.h>
-#include <mach-o/dyld_images.h>
+#import <mach-o/dyld_images.h>
 #import <objc/runtime.h>
 #import <mach-o/dyld.h>
 #import <sys/stat.h>
 #import <syslog.h>
 #import <dlfcn.h>
+#import "common.h"
 
 /*
  The tweakloader is a dylib injected into all xpc services and processes. It is responsible for loading user-installed tweaks.
@@ -13,6 +14,9 @@
 
 #define TWEAK_DIRECTORY @"/fs/jb/Library/MobileSubstrate/DynamicLibraries"
 #define LIBHOOKER_SAFEMODE_FILE "/tmp/.libhhoker_safemode"
+
+#define ENVVAR_ENABLED(name) ({ char *value = getenv(name); int retval = value != NULL && strcmp(value, "1") == 0; retval; })
+
 static BOOL isSystemApp = NO;
 
 struct libhooker_image {
@@ -20,17 +24,16 @@ struct libhooker_image {
     uintptr_t slide;
     void *dyldHandle;
 };
+
 static void (*_MSHookFunction)(void *symbol, void *replace, void **result);
 static bool (*_LHFindSymbols)(struct libhooker_image *libhookerImage, const char **symbolNames, void **searchSyms, size_t searchSymCount);
 
-
 static void LHLog(NSString *format, ...) {
-    
     va_list args;
     va_start(args, format);
     NSString *str = [[NSString alloc] initWithFormat:format arguments:args];
     va_end(args);
-    syslog(0, "tweakloader: %s", str.UTF8String);
+    serial_println("tweakloader: %s", str.UTF8String);
 }
 
 const char *last_path_component(const char *path) {
@@ -194,7 +197,7 @@ __attribute__ ((constructor)) static void init_tweakloader(void) {
         
         // SafeMode is automatically enabled when PineBoard or backboardd crash.
         // For other processes, the presence of the _MSSafeMode or _SafeMode environment variables will enable safemode
-        BOOL safeModeEnabled = (getenv("_MSSafeMode") != NULL && strcmp(getenv("_MSSafeMode"), "1") == 0) || (getenv("_SafeMode") != NULL && strcmp(getenv("_SafeMode"), "1") == 0);
+        BOOL safeModeEnabled = ENVVAR_ENABLED("_MSSafeMode") || ENVVAR_ENABLED("_SafeMode");
         isSystemApp = strcmp(current_executable_path, "/Applications/PineBoard.app/PineBoard") == 0 || strcmp(current_executable_path, "/usr/libexec/backboardd") == 0;
         
         if (!safeModeEnabled && isSystemApp) {

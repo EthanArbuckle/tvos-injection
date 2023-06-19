@@ -54,6 +54,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CECDF2C82A402ED1005689B9 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		CECFE11D2A18AF6400DE14B5 /* launchd_hooks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = launchd_hooks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CECFE1242A18AF9600DE14B5 /* launchd_hooks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = launchd_hooks.m; path = src/launchd_hooks.m; sourceTree = "<group>"; };
 		CECFE12B2A18AFAB00DE14B5 /* xpcproxy_hooks.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = xpcproxy_hooks.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +116,7 @@
 				CECFE1322A18AFB800DE14B5 /* xpcproxy_hooks.m */,
 				CECFE1402A18AFE100DE14B5 /* tweakloader.m */,
 				CECFE14E2A18B00500DE14B5 /* ldrestart.m */,
+				CECDF2C82A402ED1005689B9 /* common.h */,
 				CECFE16A2A19E01000DE14B5 /* launchd_injector.m */,
 				CECFE15D2A19847A00DE14B5 /* ldrestart_ents.xml */,
 				CECFE16E2A19E04600DE14B5 /* launchd_injector_ents.xml */,
