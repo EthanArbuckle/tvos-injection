@@ -24,12 +24,33 @@
 #define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
 
 #if REQUIRE_FULL_USERSPACE_REBOOT
-    extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+    
+#import <sys/mount.h>
+#define CHECKRAIN_BINPACK_BLOCKDEV "/dev/disk5"
+
+struct hfs_mount_args {
+    char     *fspec;
+    uid_t     hfs_uid;
+    gid_t     hfs_gid;
+    mode_t    hfs_mask;
+    u_int32_t hfs_encoding;
+    struct    timezone hfs_timezone;
+    int       flags;
+    int       journal_tbuffer_size;
+    int       journal_flags;
+    int       journal_disable;
+};
+
+extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
+
 #else
-    #import <dlfcn.h>
-    static void (*_MSHookFunction)(void *symbol, void *replace, void **result);
-    static void *orig_posix_spawn;
-    static void *orig_posix_spawnp;
+
+#import <dlfcn.h>
+
+static void (*_MSHookFunction)(void *symbol, void *replace, void **result);
+static void *orig_posix_spawn;
+static void *orig_posix_spawnp;
+
 #endif
 
 
@@ -133,6 +154,19 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) 
     return xdict_out;
 }
 
+static void remount_checkra1n_binpack(void) {
+    
+    struct hfs_mount_args args;
+    args.fspec = CHECKRAIN_BINPACK_BLOCKDEV;
+    args.hfs_uid = 0;
+    args.hfs_gid = 0;
+    args.hfs_mask = 0;
+    args.flags = MNT_RDONLY;
+
+    __unused int ret = mount("hfs", "/binpack", MNT_RDONLY, &args);
+    serial_println("checkra1n binpack remount of %s retval: %d", CHECKRAIN_BINPACK_BLOCKDEV, ret);
+}
+
 #endif
 
 static void __attribute__((constructor)) init_launchd_hooks(void) {
@@ -146,6 +180,10 @@ static void __attribute__((constructor)) init_launchd_hooks(void) {
         DYLD_INTERPOSE(posix_spawn_hook, posix_spawn);
         DYLD_INTERPOSE(posix_spawnp_hook, posix_spawnp);
         DYLD_INTERPOSE(xpc_dictionary_get_value_hook, xpc_dictionary_get_value);
+        
+        // Remount checkra1n's binpack
+        remount_checkra1n_binpack();
+        
         return;
     }
 
