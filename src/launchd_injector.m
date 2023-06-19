@@ -102,7 +102,9 @@ int main(int argc, char *argv[]) {
     
     thread_terminate(remote_thread);
     free(stack);
-    
+
+#if REQUIRE_FULL_USERSPACE_REBOOT
+
     sleep(1);
     partial_userspace_reboot();
     
@@ -116,5 +118,10 @@ int main(int argc, char *argv[]) {
     }
     
     printf("success!\n");
+    
+#else
+    printf("success! run ldrestart to enable system-wide injection\n");
+#endif
+    
     return 0;
 }

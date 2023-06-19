@@ -23,12 +23,6 @@
 
 #define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
 
-// This dictates whether injection is kicked off immediately upon this dylib loading (by using libhooker to hook the posix_spawn functions),
-// vs injection using dyld function interposing which requires launchd to be respawned. The former is faster and doens't require killing any processes, but tweaks won't be
-// loaded into processes until they are restarted (if they're already running). The latter is slower because every process on the device is respawned, but tweaks are immediately injected
-// system-wide.
-#define REQUIRE_FULL_USERSPACE_REBOOT 0
-
 #if REQUIRE_FULL_USERSPACE_REBOOT
     extern xpc_object_t xpc_create_from_plist(const void *buf, size_t len);
 #else
