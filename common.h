@@ -8,6 +8,11 @@
 #ifndef common_h
 #define common_h
 
+#define JB_ROOT_PREFIX "/var/jb"
+//#define CHECKRA1N_BINPACK_MOUNT_PATH "/binpack"
+// on tvOS 18, this is currently mounted at /cores/binpack
+#define CHECKRA1N_BINPACK_MOUNT_PATH "/cores/binpack"
+
 // This dictates whether injection is kicked off immediately upon this dylib loading (by using libhooker to hook the posix_spawn functions),
 // vs injection using dyld function interposing which requires launchd to be respawned. The former is faster and doens't require killing any processes, but tweaks won't be
 // loaded into processes until they are restarted (if they're already running). The latter is slower because every process on the device is respawned, but tweaks are immediately injected

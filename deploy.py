@@ -7,7 +7,7 @@ from typing import Optional
 DEVICE_SSH_PORT = "2222"
 DEVICE_SSH_IP = "localhost"
 LOCAL_LDID2_PATH = "/opt/homebrew/bin/ldid2"
-
+JB_ROOT_PREFIX = "/var/jb"
 
 @dataclass
 class BinaryInstallInformation:
@@ -19,11 +19,11 @@ class BinaryInstallInformation:
 
 
 BINARY_DEPLOY_INFO = {
-    "ldrestart": BinaryInstallInformation("/fs/jb/usr/bin/ldrestart", "ldrestart_ents.xml"),
-    "launchd_injector": BinaryInstallInformation("/fs/jb/usr/bin/launchd_injector", "launchd_injector_ents.xml"),
-    "launchd_hooks": BinaryInstallInformation("/fs/jb/usr/libexec/libhooker/launchd_hooks.dylib"),
-    "xpcproxy_hooks": BinaryInstallInformation("/fs/jb/usr/libexec/libhooker/xpcproxy_hooks.dylib"),
-    "tweakloader": BinaryInstallInformation("/fs/jb/usr/libexec/libhooker/tweakloader.dylib"),
+    "ldrestart": BinaryInstallInformation(f"{JB_ROOT_PREFIX}/usr/bin/ldrestart", "ldrestart_ents.xml"),
+    "launchd_injector": BinaryInstallInformation(f"{JB_ROOT_PREFIX}/usr/bin/launchd_injector", "launchd_injector_ents.xml"),
+    "launchd_hooks": BinaryInstallInformation(f"{JB_ROOT_PREFIX}/usr/libexec/libhooker/launchd_hooks.dylib"),
+    "xpcproxy_hooks": BinaryInstallInformation(f"{JB_ROOT_PREFIX}/usr/libexec/libhooker/xpcproxy_hooks.dylib"),
+    "tweakloader": BinaryInstallInformation(f"{JB_ROOT_PREFIX}/usr/libexec/libhooker/tweakloader.dylib"),
 }
 
 

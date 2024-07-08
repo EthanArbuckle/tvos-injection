@@ -2,6 +2,7 @@
 #include <mach/mach.h>
 #include <xpc.h>
 #include <dlfcn.h>
+#include "common.h"
 
 /*
  This utility bootstraps code injection by coercing a remote dlopen() invocation inside launchd. The dylib mapped into launchd handles inserting
@@ -11,7 +12,8 @@
  Additionally, custom LaunchDaemons (originating from tweaks) are kicked-off from here.
  */
 
-#define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
+#define LAUNCHD_HOOKS_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/launchd_hooks.dylib"
+#define LAUNCH_DAEMONS_DIRECTORY JB_ROOT_PREFIX "/Library/LaunchDaemons"
 
 extern kern_return_t mach_vm_allocate(vm_map_t target, mach_vm_address_t *address, mach_vm_size_t size, int flags);
 extern kern_return_t mach_vm_protect(vm_map_t target_task, mach_vm_address_t address, mach_vm_size_t size, boolean_t set_maximum, vm_prot_t new_protection);
@@ -49,7 +51,7 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     
-    const char *launchd_hook_dylib_path = "/fs/jb/usr/libexec/libhooker/launchd_hooks.dylib";
+    const char *launchd_hook_dylib_path = LAUNCHD_HOOKS_DYLIB_PATH;
     
     mach_vm_size_t stack_size = 0x4000;
     mach_port_insert_right(mach_task_self(), launchd_task, launchd_task, MACH_MSG_TYPE_COPY_SEND);
@@ -82,13 +84,24 @@ int main(int argc, char *argv[]) {
     mach_port_insert_right(mach_task_self(), exc_handler, exc_handler, MACH_MSG_TYPE_MAKE_SEND);
     
     mach_port_t remote_thread;
-    if (thread_create_running(launchd_task, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT, &remote_thread) != KERN_SUCCESS) {
+    kern_return_t (*_thread_create_running)(task_t, thread_state_flavor_t, thread_state_t, mach_msg_type_number_t, thread_act_t *) = dlsym(RTLD_DEFAULT, "thread_create_running");
+    if (_thread_create_running == NULL) {
+        printf("failed to resolve thread_create_running\n");
+        return -1;
+    }
+    if (_thread_create_running(launchd_task, ARM_THREAD_STATE64, (thread_state_t)&state, ARM_THREAD_STATE64_COUNT, &remote_thread) != KERN_SUCCESS) {
         free(stack);
         printf("failed to create remote thread\n");
         return -1;
     }
     
-    if (thread_set_exception_ports(remote_thread, EXC_MASK_BAD_ACCESS, exc_handler, EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES, ARM_THREAD_STATE64) != KERN_SUCCESS) {
+    kern_return_t (*_thread_set_exception_ports)(thread_act_t, exception_mask_t, mach_port_t, exception_behavior_t, thread_state_flavor_t) = dlsym(RTLD_DEFAULT, "thread_set_exception_ports");
+    if (_thread_set_exception_ports == NULL) {
+        free(stack);
+        printf("failed to resolve thread_set_exception_ports\n");
+        return -1;
+    }
+    if (_thread_set_exception_ports(remote_thread, EXC_MASK_BAD_ACCESS, exc_handler, EXCEPTION_DEFAULT | MACH_EXCEPTION_CODES, ARM_THREAD_STATE64) != KERN_SUCCESS) {
         free(stack);
         printf("failed to set remote exception port\n");
         return -1;
@@ -96,11 +109,25 @@ int main(int argc, char *argv[]) {
     
     thread_resume(remote_thread);
     
+    void (*_mach_msg)(mach_msg_header_t *, mach_msg_option_t, mach_msg_size_t, mach_msg_size_t, mach_port_t, mach_msg_timeout_t, mach_port_t) = dlsym(RTLD_DEFAULT, "mach_msg");
+    if (_mach_msg == NULL) {
+        free(stack);
+        printf("failed to resolve mach_msg\n");
+        return -1;
+    }
+
     mach_msg_header_t *msg = malloc(0x4000);
-    mach_msg(msg, MACH_RCV_MSG | MACH_RCV_LARGE, 0, 0x4000, exc_handler, 0, MACH_PORT_NULL);
+    _mach_msg(msg, MACH_RCV_MSG | MACH_RCV_LARGE, 0, 0x4000, exc_handler, 0, MACH_PORT_NULL);
     free(msg);
     
-    thread_terminate(remote_thread);
+    kern_return_t (*_thread_terminate)(thread_act_t) = dlsym(RTLD_DEFAULT, "thread_terminate");
+    if (_thread_terminate == NULL) {
+        free(stack);
+        printf("failed to resolve thread_terminate\n");
+        return -1;
+    }
+    
+    _thread_terminate(remote_thread);
     free(stack);
 
 #if REQUIRE_FULL_USERSPACE_REBOOT
@@ -108,10 +135,12 @@ int main(int argc, char *argv[]) {
     sleep(1);
     partial_userspace_reboot();
     
-    NSArray *daemonPlists = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:LAUNCH_DAEMONS_DIRECTORY error:nil];
+    NSArray *daemonPlists = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithUTF8String:LAUNCH_DAEMONS_DIRECTORY] error:nil];
     if (daemonPlists) {
         for (NSString *daemonPlistName in daemonPlists) {
-            const char *absolute_path = [LAUNCH_DAEMONS_DIRECTORY stringByAppendingPathComponent:daemonPlistName].UTF8String;
+
+            char absolute_path[1024];
+            snprintf(absolute_path, sizeof(absolute_path), "%s/%s", LAUNCH_DAEMONS_DIRECTORY, daemonPlistName.UTF8String);
             printf("loading LaunchDaemon: %s\n", absolute_path);
             load_daemon(absolute_path);
         }

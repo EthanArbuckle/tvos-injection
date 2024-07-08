@@ -21,7 +21,11 @@
  skip killing some processes that we don't want to kill, such as ssh/dropbear (and potentially some other stuff).
  */
 
-#define LAUNCH_DAEMONS_DIRECTORY @"/fs/jb/Library/LaunchDaemons"
+#define LAUNCH_DAEMONS_DIRECTORY JB_ROOT_PREFIX "/Library/LaunchDaemons"
+#define XPCPROXY_HOOKS_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/xpcproxy_hooks.dylib"
+#define LAUNCHD_HOOKS_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/launchd_hooks.dylib"
+#define TWEAK_LOADER_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/tweakloader.dylib"
+#define LIBHOOKER_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/libhooker.dylib"
 
 #if REQUIRE_FULL_USERSPACE_REBOOT
     
@@ -64,7 +68,7 @@ static int posix_spawn_launchd(pid_t * __restrict pid, const char * __restrict p
 
         // If xpcproxy is being spawned, add xpcproxy_hooks.dylib to it (which handles adding the tweakloader). For everything else, add the tweakloader directly
         int is_xpcproxy = strstr(path, "xpcproxy") != NULL;
-        char *dylib_to_inject = is_xpcproxy ? "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/xpcproxy_hooks.dylib" : "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/tweakloader.dylib";
+        char *dylib_to_inject = is_xpcproxy ? "DYLD_INSERT_LIBRARIES=" XPCPROXY_HOOKS_DYLIB_PATH : "DYLD_INSERT_LIBRARIES=" TWEAK_LOADER_DYLIB_PATH;
         
         if (path && strlen(path) > 2) {
             serial_println("inserting dylib into process %s: %s", path, dylib_to_inject);
@@ -113,15 +117,15 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) 
     if (key == NULL || strlen(key) < 1) {
         return xdict_out;
     }
-    
+
+    NSString *launchDaemonsDirectory = [NSString stringWithUTF8String:LAUNCH_DAEMONS_DIRECTORY];
     if (strcmp(key, "LaunchDaemons") == 0) {
         
         serial_println("caught launch daemon creation plist");
-
-        NSArray *daemonPlistNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:LAUNCH_DAEMONS_DIRECTORY error:nil];
+        NSArray *daemonPlistNames = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:launchDaemonsDirectory error:nil];
         for (NSString *plistName in daemonPlistNames) {
             
-            const char *plist_path = [LAUNCH_DAEMONS_DIRECTORY stringByAppendingPathComponent:plistName].UTF8String;
+            const char *plist_path = [launchDaemonsDirectory stringByAppendingPathComponent:plistName].UTF8String;
             int plist_fd = open(plist_path, O_RDONLY);
             if (plist_fd < 1) {
                 continue;
@@ -147,8 +151,8 @@ xpc_object_t xpc_dictionary_get_value_hook(xpc_object_t xdict, const char *key) 
         }
     }
     else if (strcmp(key, "Paths") == 0) {
-        serial_println("inserting launch daemon path: %s", LAUNCH_DAEMONS_DIRECTORY.UTF8String);
-        xpc_array_set_string(xdict_out, XPC_ARRAY_APPEND, LAUNCH_DAEMONS_DIRECTORY.UTF8String);
+        serial_println("inserting launch daemon path: %s", launchDaemonsDirectory.UTF8String);
+        xpc_array_set_string(xdict_out, XPC_ARRAY_APPEND, launchDaemonsDirectory.UTF8String);
     }
 
     return xdict_out;
@@ -187,10 +191,10 @@ static void __attribute__((constructor)) init_launchd_hooks(void) {
         return;
     }
 
-    setenv("DYLD_INSERT_LIBRARIES", "/fs/jb/usr/libexec/libhooker/launchd_hooks.dylib", 1);
+    setenv("DYLD_INSERT_LIBRARIES", LAUNCHD_HOOKS_DYLIB_PATH, 1);
     setenv("libhooker-launchd-reload", "1", 1);
 #else
-    void *lhHandle = dlopen("/fs/jb/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", 0);
+    void *lhHandle = dlopen(LIBHOOKER_DYLIB_PATH, 0);
     serial_println("libhooker dyld handle: %p", lhHandle);
 
     if (lhHandle) {

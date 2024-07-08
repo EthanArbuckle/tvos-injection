@@ -12,8 +12,9 @@
  Hooks in launchd and xpcproxy ensure that tweakloader is brought into all relevant processes.
  */
 
-#define TWEAK_DIRECTORY @"/fs/jb/Library/MobileSubstrate/DynamicLibraries"
-#define LIBHOOKER_SAFEMODE_FILE "/tmp/.libhhoker_safemode"
+#define TWEAK_DIRECTORY JB_ROOT_PREFIX "/Library/MobileSubstrate/DynamicLibraries"
+#define SAFEMODE_FILE "/private/var/tmp/.injection_safemode"
+#define LIBHOOKER_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/libhooker.dylib"
 
 #define ENVVAR_ENABLED(name) ({ char *value = getenv(name); int retval = value != NULL && strcmp(value, "1") == 0; retval; })
 
@@ -48,7 +49,8 @@ const char *last_path_component(const char *path) {
 
 static NSArray *locate_dylibs_to_inject(const char *executable_path, CFStringRef bundleId) {
     
-    NSArray *dylibDirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:TWEAK_DIRECTORY error:nil];
+    NSString *tweakDirectory = [NSString stringWithUTF8String:TWEAK_DIRECTORY];
+    NSArray *dylibDirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:tweakDirectory error:nil];
     if (!dylibDirContents || [dylibDirContents count] < 1) {
         return nil;
     }
@@ -63,7 +65,7 @@ static NSArray *locate_dylibs_to_inject(const char *executable_path, CFStringRef
     NSMutableArray *applicableDylibs = [[NSMutableArray alloc] init];
     for (NSString *plistName in tweakFilterPlistNames) {
         
-        NSString *absolutePlistPath = [TWEAK_DIRECTORY stringByAppendingPathComponent:plistName];
+        NSString *absolutePlistPath = [tweakDirectory stringByAppendingPathComponent:plistName];
         NSDictionary *tweakPlistContents = [NSDictionary dictionaryWithContentsOfFile:absolutePlistPath];
         
         // Bail if the plist could not be read or if its not a dictionary
@@ -147,9 +149,9 @@ static void signal_handler(int signal, siginfo_t *info, void *uap) {
     // If this is PineBoard/backboardd, write the safemode file to disk to disable
     // tweak injection when the process respawns
     if (isSystemApp) {
-        FILE *safemode_file = fopen(LIBHOOKER_SAFEMODE_FILE, "w");
+        FILE *safemode_file = fopen(SAFEMODE_FILE, "w");
         if (safemode_file) {
-            fprintf(safemode_file, "who broke something?\n");
+            fprintf(safemode_file, "A system app is crashing. Writing tweak injection safemode file at %s\n", SAFEMODE_FILE);
             fclose(safemode_file);
         }
     }
@@ -168,7 +170,7 @@ static int replacement_open(const char *path, int oflag, int other) {
     
     // If dyld failed to locate the file, try adding the jailbreak prefix path to it
     if (result < 1) {
-        const char *prefix = "/fs/jb";
+        const char *prefix = JB_ROOT_PREFIX;
         char *fixed_path = malloc((strlen(prefix) + strlen(path) + 1) * sizeof(char));
         sprintf(fixed_path, "%s%s", prefix, path);
         result = original_open(fixed_path, oflag, other);
@@ -203,14 +205,14 @@ __attribute__ ((constructor)) static void init_tweakloader(void) {
         if (!safeModeEnabled && isSystemApp) {
             // If safemode is not explicity enabled via environment variables, but this is Pineboard or backboardd, check for the file that indicates one of those processess crashed
             struct stat buffer;
-            safeModeEnabled = stat(LIBHOOKER_SAFEMODE_FILE, &buffer) == 0;
+            safeModeEnabled = stat(SAFEMODE_FILE, &buffer) == 0;
         }
         
         // Safe mode is enabled -- do not inject anything into this process
         // TODO: Show some custom UI for safemode / respringing out of safemode
         if (safeModeEnabled) {
             // Delete the file so safemode is disabled on next respring
-            unlink(LIBHOOKER_SAFEMODE_FILE);
+            unlink(SAFEMODE_FILE);
             LHLog(@"libhooker: safemode enabled for %s. not injecting anything.", current_executable_path);
             return;
         }
@@ -241,7 +243,7 @@ __attribute__ ((constructor)) static void init_tweakloader(void) {
             // However, their load commands may point to libraries (like Substrate/Substitute/Libhooker) expected to be on the System partition.
             // To workaround this without requiring tweaks to be recompiled to binary-patched, hook dyld's `open()` function and, when some file fails to be located, attempt to
             // find it inside the new jailbreak prefix path
-            void *lhHandle = dlopen("/fs/jb/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", 0);
+            void *lhHandle = dlopen(LIBHOOKER_DYLIB_PATH, 0);
             _MSHookFunction = dlsym(lhHandle, "MSHookFunction");
             _LHFindSymbols = dlsym(lhHandle, "LHFindSymbols");
             int found_hooking_symbols = _MSHookFunction != NULL && _LHFindSymbols != NULL;

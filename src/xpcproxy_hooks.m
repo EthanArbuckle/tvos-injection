@@ -9,6 +9,9 @@
  Similiar to the launchd hook, the hooks applied to this process ensure that the tweakloader is injected into services spawned by xpcproxy.
  */
 
+#define TWEAK_LOADER_DYLIB_PATH JB_ROOT_PREFIX "/usr/libexec/libhooker/tweakloader.dylib"
+
+
 static const char *process_blacklist[] = {
     "launchd",
     "fairplayd",
@@ -68,12 +71,14 @@ static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict 
         }
         envp_size++;
         
+        char *dyld_insert_tweak_loader = "DYLD_INSERT_LIBRARIES=" TWEAK_LOADER_DYLIB_PATH;
+        
         size_t new_size = envp_size + 1;
         int dylib_already_present = 0;
         char **new_envp = malloc(new_size * sizeof(char *));
         for (size_t i = 0; i < envp_size - 1; i++) {
             
-            if (strcmp(__envp[i], "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/tweakloader.dylib") == 0) {
+            if (strcmp(__envp[i], dyld_insert_tweak_loader) == 0) {
                 dylib_already_present = 1;
             }
 
@@ -81,7 +86,7 @@ static int posix_spawn_xpcproxy(pid_t * __restrict pid, const char * __restrict 
         }
         
         if (dylib_already_present == 0) {
-            new_envp[envp_size - 1] = "DYLD_INSERT_LIBRARIES=/fs/jb/usr/libexec/libhooker/tweakloader.dylib";
+            new_envp[envp_size - 1] = dyld_insert_tweak_loader;
             new_envp[new_size - 1] = NULL;
             envp = new_envp;
         }
